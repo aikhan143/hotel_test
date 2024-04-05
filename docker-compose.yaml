@@ -1,0 +1,83 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8023:8000"
+    env_file:
+      - ./.env
+    container_name: web
+    networks:
+      - test
+    depends_on:
+      - db
+    restart: on-failure
+    volumes:
+      - .:/code
+      - static_volume:/code/static
+
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${NAME}
+    env_file:
+      - ./.env
+    networks:
+      - test
+    volumes:
+      - postgres_data:/var/lib/prostgresql/data/
+
+  migrations:
+    build: .
+    command: sh -c "python3 manage.py makemigrations && python3 manage.py migrate"
+
+    depends_on:
+      - web
+      - db
+    env_file:
+      - ./.env
+    networks:
+      - test
+    restart: on-failure
+
+  nginx:
+    build: nginx
+    ports:
+      - "80:80"
+    networks:
+      - test
+    depends_on:
+      - web
+    volumes:
+      - static_volume:/code/static
+
+  celery:
+    build: .
+    command: celery -A config worker -l info
+    depends_on:
+      - web
+      - redis
+    env_file:
+      - ./.env
+    networks:
+      - test
+    restart: on-failure
+
+  redis:
+    image: redis
+    networks:
+      - test
+    restart: unless-stopped
+
+networks:
+  test:
+    driver: bridge
+    external: false
+
+volumes:
+  static_volume:
+  postgres_data:
