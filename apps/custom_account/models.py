@@ -23,8 +23,8 @@ class UserManager(BaseUserManager):
         return self._create(email, password, first_name, last_name, **extra)
 
 class User(AbstractUser):
-    last_name = models.CharField(max_length=100, null=True)
-    first_name = models.CharField(max_length=100, null=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=15, blank=True)

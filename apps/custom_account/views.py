@@ -68,8 +68,6 @@ class UserView(APIView):
     def put(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = User.objects.get(email=self.request.user)
-        instance.is_active = True
-        instance.save()
         serializer = self.serializer_class(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -83,8 +81,6 @@ class UserView(APIView):
             return Response('Нельзя менять почтовый адрес', status=400)
 
         instance = self.get_queryset()
-        # instance.is_active = True
-        # instance.save()
         serializer = self.serializer_class(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save()

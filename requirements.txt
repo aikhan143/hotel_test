@@ -9,3 +9,4 @@ django-filter
 celery
 redis
 django-cors-headers
+django-allauth

@@ -30,9 +30,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['34.125.220.199', 'localhost', '0.0.0.0:80']
+ALLOWED_HOSTS = ['*']
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'custom_account.User'
 
 
 # Application definition
@@ -51,9 +51,14 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'django_filters',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     #apps
-    'apps.account',
+    'apps.custom_account',
     'apps.room',
 
 ]
@@ -67,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -194,8 +200,27 @@ REDIS_PORT = '6379'
 
 CORS_ALLOWED_METHODS = ['OPTIONS', 'GET', 'PUT', 'PATCH', 'POST', 'DELETE']
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:80", "http://127.0.0.1:80", "http://0.0.0.0:80", "http://0.0.0.0:8000", "http://34.42.8.109",  "http://127.0.0.1:3000", "http://localhost:3000", "34.125.220.199"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:80", "http://127.0.0.1:80", "http://0.0.0.0:80", "http://0.0.0.0:8000", "http://34.42.8.109",  "http://127.0.0.1:3000", "http://localhost:3000", "http://34.125.220.199"]
 
-CORS_ALLOWED_ORIGIN_REGEXES = ["http://localhost:80", "http://127.0.0.1:80", "http://0.0.0.0:80", "http://0.0.0.0:8000", "http://34.42.8.109",  "http://127.0.0.1:3000", "http://localhost:3000", "34.125.220.199"]
+CORS_ALLOWED_ORIGIN_REGEXES = ["http://localhost:80", "http://127.0.0.1:80", "http://0.0.0.0:80", "http://0.0.0.0:8000", "http://34.42.8.109",  "http://127.0.0.1:3000", "http://localhost:3000", "http://34.125.220.199"]
 
 # CORS_ALLOW_ALL_ORIGINS = True
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend',
+#     'allauth.account.auth_backends.AuthenticationBackend',
+# )
+
+SITE_ID = 1

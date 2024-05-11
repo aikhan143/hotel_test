@@ -23,8 +23,8 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='CodeCrafters',
-        description='learning code',
+        title='HotelTest',
+        description='testing',
         default_version='v1'
     ),
     public=True
@@ -32,8 +32,10 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include('apps.account.urls')),
-    # path('api/v1/', include('apps.room'))
+    path('api/v1/', include('apps.custom_account.urls')),
+    path('api/v1/', include('apps.room.urls')),
+    path('docs/', schema_view.with_ui('swagger')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 urlpatterns += static(
